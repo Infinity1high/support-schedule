@@ -7,4 +7,5 @@ export default ({ app }: TRoutesInput) => {
   app.get("/api/scheduleCreated", ScheduleController.create);
 
   app.get("/api/schedule", ScheduleController.find);
+  app.get("/api/users", UserController.find)
 };

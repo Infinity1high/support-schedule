@@ -18,6 +18,7 @@ class Schedule {
                     path: 'morning',
                     model: "User"
                 },
+
             ]
         },
     );

@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import routes from './routes';
 import connect from './connect';
 const app: Application = express();
-const port = 8081;
+const port = 8082;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
