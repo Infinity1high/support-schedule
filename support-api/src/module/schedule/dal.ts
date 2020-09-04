@@ -6,7 +6,21 @@ class Schedule {
     return ScheduleModel.create({ shifts, dateStart });
   }
   find() {
-    return ScheduleModel.find();
+    return ScheduleModel.find().populate(
+        {
+            path: 'shifts',
+            populate: [
+                {
+                    path: 'evening',
+                    model: 'User'
+                },
+                {
+                    path: 'morning',
+                    model: "User"
+                },
+            ]
+        },
+    );
   }
 
   findUpcoming() {
