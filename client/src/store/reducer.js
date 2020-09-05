@@ -19,6 +19,11 @@ const dataReducer = (state = initState, action) => {
         ...state,
         people: action.payload,
       };
+    case actions.CREATE_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        schedule: [...state.schedule, action.payload]
+      }
     default:
       return state;
   }

@@ -7,7 +7,8 @@ import {
   View,
   Text,
   StatusBar,
-  TouchableOpacity
+  TouchableOpacity,
+  Button
 } from 'react-native';
 import keyBy from 'lodash/keyBy'
 import { connect } from 'react-redux';
@@ -27,22 +28,29 @@ const Schedule = (props) => {
     <SafeAreaView style={{flex: 1}}>
       <ScrollView>
         <View style={styles.container}>
-          <TouchableOpacity onPress={() => page > 1 && changePage(page--)}>
+          <TouchableOpacity onPress={() => page > 1 && changePage(page-1)}>
             <Icon name="chevron-back-outline" size={30}/>
           </TouchableOpacity>
             <Text style={styles.title}>{props.schedule && moment(props.schedule[page].dateStart).format('DD-MM-YY')}</Text>
-          <TouchableOpacity onPress={() => page < props.schedule.length -1 && changePage(page++)}>
+          <TouchableOpacity onPress={() => page < props.schedule.length -1 && changePage(page+1)}>
             <Icon name="chevron-forward-outline" size={30}/>
           </TouchableOpacity>
         </View>
         {props.schedule && props.schedule[page].shifts && props.schedule[page].shifts.map(it => <ScheduleLine item={{...it, morning: usersByKeys[it.morning._id], evening: usersByKeys[it.evening._id]}}/>)}
       </ScrollView>
+      <TouchableOpacity onPress={props.createSchedule} style={styles.button}>
+       <Icon name='add' size={35} color='white'/>
+      </TouchableOpacity>
     </SafeAreaView>
 
   )
 };
 
 const styles = StyleSheet.create({
+  page: {
+    flex: 1,
+    position: 'relative'
+  },
   container: {
     paddingHorizontal: 50,
     flex: 1,
@@ -53,6 +61,18 @@ const styles = StyleSheet.create({
   title: {
     paddingHorizontal: 10,
     fontSize: 20,
+  },
+  button: {
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: 'tomato',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })
 
@@ -61,7 +81,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  loadSchedule: actions.loadSchedule
+  loadSchedule: actions.loadSchedule,
+  createSchedule: actions.createNewSchedule
 };
 
 export default connect(

@@ -11,6 +11,11 @@ export type ShiftArr = Array<{
   date: string;
 }>;
 
+const daysToAdd: {[key: number]: number} = {
+    5: 3,
+    6: 2,
+};
+
 function createShedule(
   people: string[],
   date: string,
@@ -41,10 +46,11 @@ function createShedule(
   if (!availablePeople.length) {
     return shiftArr;
   }
+  const days = daysToAdd[moment(date).weekday()] || 1;
 
   return createShedule(
     availablePeople,
-    moment(date).add(1, "day").format(),
+    moment(date).add(days, "day").format(),
     occurencies,
     shiftArr
   );
@@ -76,7 +82,10 @@ class Schedule implements ScheduleType {
   };
 
   find = async (req: Request, res: Response) => {
-    return this.dal.find().then((item: Array<ISchedule>) => res.send(item));
+    return this.dal.find().then((item: Array<ISchedule>) => {
+        console.log(req)
+        res.setHeader('Access-Control-Allow-Origin', '*')
+        return res.send(item)});
   };
 }
 
