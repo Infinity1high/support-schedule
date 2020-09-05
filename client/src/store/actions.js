@@ -35,7 +35,7 @@ export function createNewSchedule() {
       .then((res) => {
         dispatch({
           type: CREATE_SCHEDULE_SUCCESS,
-          payload: res
+          payload: res,
         });
       })
       .catch((err) => dispatch({ type: LOAD_SCHEDULE_FAIL, payload: { err }}))
@@ -46,10 +46,8 @@ export function loadUsers() {
   return (dispatch) => {
     fetch(`${URL}/users`)
       .then(res => {
-        console.log(res, 'HERE RES')
         return res.json()})
       .then((res) => {
-        console.log(res, 'rtesponse')
           const users = res.map((it, index) => ({...it, color: colors[index]}));
           dispatch({
             type: LOAD_USER_DATA,

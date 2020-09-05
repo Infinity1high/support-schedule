@@ -8,14 +8,13 @@ import {
   Text,
   StatusBar,
   TouchableOpacity,
-  Button
+  Button,
 } from 'react-native';
-import keyBy from 'lodash/keyBy'
-import { connect } from 'react-redux';
+import keyBy from 'lodash/keyBy';
+import {connect} from 'react-redux';
 import * as actions from '../../store/actions';
 import ScheduleLine from '../../components/ScheduleLine';
 import Icon from 'react-native-vector-icons/Ionicons';
-
 
 const Schedule = (props) => {
   useEffect(props.loadSchedule, []);
@@ -28,28 +27,43 @@ const Schedule = (props) => {
     <SafeAreaView style={{flex: 1}}>
       <ScrollView>
         <View style={styles.container}>
-          <TouchableOpacity onPress={() => page > 1 && changePage(page-1)}>
-            <Icon name="chevron-back-outline" size={30}/>
+          <TouchableOpacity onPress={() => page > 1 && changePage(page - 1)}>
+            <Icon name="chevron-back-outline" size={30} />
           </TouchableOpacity>
-            <Text style={styles.title}>{props.schedule && moment(props.schedule[page].dateStart).format('DD-MM-YY')}</Text>
-          <TouchableOpacity onPress={() => page < props.schedule.length -1 && changePage(page+1)}>
-            <Icon name="chevron-forward-outline" size={30}/>
+          <Text style={styles.title}>
+            {props.schedule &&
+              moment(props.schedule[page].dateStart).format('DD-MM-YY')}
+          </Text>
+          <TouchableOpacity
+            onPress={() =>
+              page < props.schedule.length - 1 && changePage(page + 1)
+            }>
+            <Icon name="chevron-forward-outline" size={30} />
           </TouchableOpacity>
         </View>
-        {props.schedule && props.schedule[page].shifts && props.schedule[page].shifts.map(it => <ScheduleLine item={{...it, morning: usersByKeys[it.morning._id], evening: usersByKeys[it.evening._id]}}/>)}
+        {props.schedule &&
+          props.schedule[page].shifts &&
+          props.schedule[page].shifts.map((it) => (
+            <ScheduleLine
+              item={{
+                ...it,
+                morning: usersByKeys[it.morning._id],
+                evening: usersByKeys[it.evening._id],
+              }}
+            />
+          ))}
       </ScrollView>
       <TouchableOpacity onPress={props.createSchedule} style={styles.button}>
-       <Icon name='add' size={35} color='white'/>
+        <Icon name="add" size={35} color="white" />
       </TouchableOpacity>
     </SafeAreaView>
-
-  )
+  );
 };
 
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    position: 'relative'
+    position: 'relative',
   },
   container: {
     paddingHorizontal: 50,
@@ -72,20 +86,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'tomato',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
-  }
-})
+    alignItems: 'center',
+  },
+});
 
 const mapStateToProps = (state) => ({
-  ...state.dataReducer
+  ...state.dataReducer,
 });
 
 const mapDispatchToProps = {
   loadSchedule: actions.loadSchedule,
-  createSchedule: actions.createNewSchedule
+  createSchedule: actions.createNewSchedule,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Schedule);
+export default connect(mapStateToProps, mapDispatchToProps)(Schedule);

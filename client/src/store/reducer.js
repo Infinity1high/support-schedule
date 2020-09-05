@@ -1,5 +1,5 @@
 import * as actions from './actions.js';
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 
 const initState = {
   schedule: null,
@@ -22,15 +22,15 @@ const dataReducer = (state = initState, action) => {
     case actions.CREATE_SCHEDULE_SUCCESS:
       return {
         ...state,
-        schedule: [...state.schedule, action.payload]
-      }
+        schedule: [...state.schedule, action.payload],
+      };
     default:
       return state;
   }
 };
 
 const reducers = combineReducers({
-  dataReducer
+  dataReducer,
 });
 
 export default reducers;
