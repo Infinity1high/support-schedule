@@ -11,9 +11,9 @@ export type ShiftArr = Array<{
   date: string;
 }>;
 
-const daysToAdd: {[key: number]: number} = {
-    5: 3,
-    6: 2,
+const daysToAdd: { [key: number]: number } = {
+  5: 3,
+  6: 2,
 };
 
 function createSchedule(
@@ -23,18 +23,23 @@ function createSchedule(
   shiftArr: ShiftArr = [],
   peopleToExclude: string[] = []
 ): ShiftArr {
-
-   const peopleAvailableForShift = people.filter(it => !peopleToExclude.includes(it));
-  const randomIndex = Math.floor(Math.random() * peopleAvailableForShift.length);
+  const peopleAvailableForShift = people.filter(
+    (it) => !peopleToExclude.includes(it)
+  );
+  const randomIndex = Math.floor(
+    Math.random() * peopleAvailableForShift.length
+  );
   const randomPerson = peopleAvailableForShift[randomIndex];
   occurencies[randomPerson] = occurencies[randomPerson]
     ? occurencies[randomPerson] + 1
     : 1;
 
-  const randomIndex2 = Math.floor(Math.random() * (peopleAvailableForShift.length - 1));
-  const randomPerson2 = peopleAvailableForShift.filter((it) => it !== randomPerson)[
-    randomIndex2
-  ];
+  const randomIndex2 = Math.floor(
+    Math.random() * (peopleAvailableForShift.length - 1)
+  );
+  const randomPerson2 = peopleAvailableForShift.filter(
+    (it) => it !== randomPerson
+  )[randomIndex2];
   occurencies[randomPerson2] = occurencies[randomPerson2]
     ? occurencies[randomPerson2] + 1
     : 1;
@@ -60,6 +65,13 @@ function createSchedule(
   );
 }
 
+function createPerfectSchedule(people: string[], date: string) {
+  const scheduleFor10Days = createSchedule(people, date);
+  return scheduleFor10Days.length === 10
+    ? scheduleFor10Days
+    : createPerfectSchedule(people, date);
+}
+
 interface ScheduleType {
   create: (req: Request, res: Response) => any;
 }
@@ -78,7 +90,7 @@ class Schedule implements ScheduleType {
       : moment(prevSchedule[prevSchedule.length - 1].dateStart)
           .add(2, "week")
           .format();
-    const createdShiftObj = createSchedule(users, nextMonday);
+    const createdShiftObj = createPerfectSchedule(users, nextMonday);
     const shifts = await ShiftDal.createMany(createdShiftObj);
     return this.dal
       .create(shifts, nextMonday)
@@ -87,9 +99,10 @@ class Schedule implements ScheduleType {
 
   find = async (req: Request, res: Response) => {
     return this.dal.find().then((item: Array<ISchedule>) => {
-        console.log(req)
-        res.setHeader('Access-Control-Allow-Origin', '*')
-        return res.send(item)});
+      console.log(req);
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      return res.send(item);
+    });
   };
 }
 
