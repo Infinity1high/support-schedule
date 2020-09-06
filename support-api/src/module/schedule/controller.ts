@@ -16,20 +16,23 @@ const daysToAdd: {[key: number]: number} = {
     6: 2,
 };
 
-function createShedule(
+function createSchedule(
   people: string[],
   date: string,
   occurencies: { [key: string]: number } = {},
-  shiftArr: ShiftArr = []
+  shiftArr: ShiftArr = [],
+  peopleToExclude: string[] = []
 ): ShiftArr {
-  const randomIndex = Math.floor(Math.random() * people.length);
-  const randomPerson = people[randomIndex];
+
+   const peopleAvailableForShift = people.filter(it => !peopleToExclude.includes(it));
+  const randomIndex = Math.floor(Math.random() * peopleAvailableForShift.length);
+  const randomPerson = peopleAvailableForShift[randomIndex];
   occurencies[randomPerson] = occurencies[randomPerson]
     ? occurencies[randomPerson] + 1
     : 1;
 
-  const randomIndex2 = Math.floor(Math.random() * (people.length - 1));
-  const randomPerson2 = people.filter((it) => it !== randomPerson)[
+  const randomIndex2 = Math.floor(Math.random() * (peopleAvailableForShift.length - 1));
+  const randomPerson2 = peopleAvailableForShift.filter((it) => it !== randomPerson)[
     randomIndex2
   ];
   occurencies[randomPerson2] = occurencies[randomPerson2]
@@ -48,11 +51,12 @@ function createShedule(
   }
   const days = daysToAdd[moment(date).weekday()] || 1;
 
-  return createShedule(
+  return createSchedule(
     availablePeople,
     moment(date).add(days, "day").format(),
     occurencies,
-    shiftArr
+    shiftArr,
+    [randomPerson, randomPerson2]
   );
 }
 
@@ -74,7 +78,7 @@ class Schedule implements ScheduleType {
       : moment(prevSchedule[prevSchedule.length - 1].dateStart)
           .add(2, "week")
           .format();
-    const createdShiftObj = createShedule(users, nextMonday);
+    const createdShiftObj = createSchedule(users, nextMonday);
     const shifts = await ShiftDal.createMany(createdShiftObj);
     return this.dal
       .create(shifts, nextMonday)
